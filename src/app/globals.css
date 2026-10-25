@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --paper: 243 239 232; /* warm off-white */
+  --ink: 22 21 26;      /* near-black charcoal */
+  --brass: 148 111 40;  /* aged brass, accents only */
+  --plum: 91 66 88;     /* dusty plum, secondary accent */
+}
+
+html { scroll-behavior: smooth; }
+body { @apply bg-paper font-sans text-ink antialiased; }
+::selection { background: rgb(var(--brass) / 0.3); }
+
+:focus-visible { outline: 2px solid rgb(var(--plum)); outline-offset: 3px; }
+
+.label { @apply font-mono text-[0.7rem] uppercase tracking-[0.14em] text-ink/60; }
+.wrap { @apply mx-auto w-full max-w-[1280px] px-5 sm:px-8 lg:px-12; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}

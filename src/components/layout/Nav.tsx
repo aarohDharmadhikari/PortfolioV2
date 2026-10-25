@@ -59,7 +59,6 @@ export default function Nav() {
               <li key={n.href}>
                 <Link
                   href={n.href}
-                  onClick={() => setOpen(false)}
                   aria-current={isActive(n.href) ? "page" : undefined}
                   className={`flex items-center justify-between rounded-2xl px-4 py-3.5 font-display text-2xl ${isActive(n.href) ? "text-plum" : ""}`}
                 >

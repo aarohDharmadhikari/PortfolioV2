@@ -1,3 +1,4 @@
+
 import type { Project, ProjectStatus } from "@/types";
 
 export const statusLabel: Record<ProjectStatus, string> = {
@@ -7,23 +8,22 @@ export const statusLabel: Record<ProjectStatus, string> = {
   tbc: "Status to confirm",
 };
 
-// Titles/summaries come from your own project notes; statuses, years, links and
-// case-study text are intentionally unset. Fill them in here only.
 export const projects: Project[] = [
   {
     slug: "repograph",
     title: "REPOGRAPH",
-    summary: "Git repository intelligence web app with a dashboard frontend.",
+    summary:
+      "A Git repository intelligence application with a dashboard frontend.",
     category: "Web",
     stack: ["Next.js"],
     status: "tbc",
   },
   {
-    slug: "energy-aware-orchestrator",
-    title: "Energy-Aware Workload Migration Orchestrator",
+    slug: "max-ai-operating-system",
+    title: "MAX AI Operating System",
     summary:
-      "Two-person project: a data engine plus a telemetry-driven ML logic engine for datacenter power efficiency.",
-    category: "AI / ML",
+      "An AI operating-layer project exploring assistance, memory, and automation across devices.",
+    category: "AI / Systems",
     stack: [],
     status: "tbc",
   },
@@ -31,11 +31,48 @@ export const projects: Project[] = [
     slug: "ahirani-speech-to-text",
     title: "Ahirani Speech-to-Text",
     summary:
-      "Internship project at the Equal Opportunity Cell, Vishwakarma University: speech-to-text and dialect normalization for Ahirani.",
+      "A speech-to-text and dialect-normalization project for Ahirani, associated with an internship at Vishwakarma University.",
+    category: "AI / ML",
+    stack: ["Python", "Whisper"],
+    status: "tbc",
+  },
+  {
+    slug: "ai-bhavishya-patrika",
+    title: "AI Bhavishya Patrika",
+    summary:
+      "An AI-focused project exploring a digital Bhavishya Patrika experience.",
+    category: "AI / ML",
+    stack: [],
+    status: "tbc",
+  },
+  {
+    slug: "resume-analyzer",
+    title: "Resume Analyzer",
+    summary:
+      "A project focused on analyzing resume content.",
+    category: "AI / ML",
+    stack: [],
+    status: "tbc",
+  },
+  {
+    slug: "ai-plagiarism-detection",
+    title: "AI Plagiarism Detection",
+    summary:
+      "A project focused on detecting potential plagiarism in submitted content.",
+    category: "AI / ML",
+    stack: [],
+    status: "tbc",
+  },
+  {
+    slug: "energy-aware-orchestrator",
+    title: "Energy-Aware Workload Migration Orchestrator",
+    summary:
+      "A two-person project involving a data engine and a telemetry-driven machine-learning logic engine for data-center power efficiency.",
     category: "AI / ML",
     stack: [],
     status: "tbc",
   },
 ];
 
-export const getProject = (slug: string) => projects.find((p) => p.slug === slug);
+export const getProject = (slug: string) =>
+  projects.find((project) => project.slug === slug);

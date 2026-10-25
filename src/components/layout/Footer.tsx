@@ -24,6 +24,7 @@ export default function Footer() {
                 <Link href={n.href} className="hover:text-paper">{n.label}</Link>
               </li>
             ))}
+            <li><Link href="/admin/login" className="hover:text-paper">Admin (demo)</Link></li>
           </ul>
         </div>
       </div>

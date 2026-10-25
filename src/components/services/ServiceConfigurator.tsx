@@ -37,7 +37,6 @@ export default function ServiceConfigurator() {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [reference, setReference] = useState("");
   const top = useRef<HTMLHeadingElement>(null);
-  const verificationAttempt = useRef(0);
 
   const service: Service | undefined = services.find((s) => s.id === serviceId);
   const go = (s: Step) => { setErrors([]); setStep(s); setTimeout(() => top.current?.focus(), 0); };
@@ -59,31 +58,18 @@ export default function ServiceConfigurator() {
   const sendCode = async () => {
     const err = emailError(email);
     if (err) return setErrors([err]);
-    const attempt = ++verificationAttempt.current;
     setErrors([]); setVerify("sending"); setCode("");
-    try {
-      await verificationAdapter.sendCode(email.trim());
-      if (attempt === verificationAttempt.current) setVerify("pending");
-    } catch {
-      if (attempt === verificationAttempt.current) setVerify("error");
-    }
+    try { await verificationAdapter.sendCode(email); setVerify("pending"); } catch { setVerify("error"); }
   };
   const checkCode = async () => {
-    if (!/^\d{6}$/.test(code)) return;
-    const attempt = ++verificationAttempt.current;
     setVerify("checking");
-    try {
-      const result = await verificationAdapter.verifyCode(email.trim(), code);
-      if (attempt === verificationAttempt.current) setVerify(result);
-    } catch {
-      if (attempt === verificationAttempt.current) setVerify("error");
-    }
+    try { setVerify(await verificationAdapter.verifyCode(email, code.trim())); } catch { setVerify("error"); }
   };
   const submit = async () => {
-    if (!service || verify !== "verified" || submitting) return;
+    if (!service) return;
     setSubmitting(true); setSubmitError(null);
     try {
-      const r = await submissionAdapter.submitRequest({ serviceId: service.id, answers, custom, email: email.trim() });
+      const r = await submissionAdapter.submitRequest({ serviceId: service.id, answers, custom, email });
       setReference(r.reference); go("done");
     } catch { setSubmitError("The simulated submission failed. Please try again."); }
     finally { setSubmitting(false); }
@@ -197,7 +183,7 @@ export default function ServiceConfigurator() {
                 <label htmlFor="email" className="font-medium">Email address</label>
                 <input
                   id="email" type="email" autoComplete="email" className={`${input} mt-2`} value={email}
-                  onChange={(e) => { verificationAttempt.current++; setEmail(e.target.value); setVerify("idle"); setCode(""); setErrors([]); }}
+                  onChange={(e) => { setEmail(e.target.value); setVerify("idle"); }}
                 />
               </div>
               {(verify === "idle" || verify === "sending" || verify === "error") && (
@@ -210,14 +196,14 @@ export default function ServiceConfigurator() {
                 <div className="space-y-3 rounded-2xl border border-ink/15 p-5">
                   <p className="text-sm text-ink/70">Simulated: no email was sent. Enter <code className="font-mono">{DEMO_CODES.valid}</code> to verify, or <code className="font-mono">{DEMO_CODES.expired}</code> to see the expired state.</p>
                   <label htmlFor="code" className="font-medium">Verification code</label>
-                  <input id="code" inputMode="numeric" autoComplete="one-time-code" maxLength={6} className={input} value={code} disabled={verify === "checking"} onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))} />
+                  <input id="code" inputMode="numeric" maxLength={6} className={input} value={code} onChange={(e) => setCode(e.target.value)} />
                   {verify === "invalid" && <p role="alert" className="text-sm text-plum">That code isn’t right. Check it and try again.</p>}
                   {verify === "expired" && <p role="alert" className="text-sm text-plum">That code has expired. Request a new one.</p>}
                   <div className="flex gap-3">
-                    <button type="button" className={primary} disabled={!/^\d{6}$/.test(code) || verify === "checking"} onClick={checkCode}>
+                    <button type="button" className={primary} disabled={code.length < 6 || verify === "checking"} onClick={checkCode}>
                       {verify === "checking" && <Loader2 size={16} className="animate-spin" />} Verify
                     </button>
-                    <button type="button" className={ghost} disabled={verify === "checking"} onClick={sendCode}>Resend code</button>
+                    <button type="button" className={ghost} onClick={sendCode}>Resend code</button>
                   </div>
                 </div>
               )}
@@ -247,8 +233,8 @@ export default function ServiceConfigurator() {
             </dl>
             {submitError && <p role="alert" className="mt-4 text-sm text-plum">{submitError}</p>}
             <div className="mt-10 flex flex-wrap gap-3">
-              <button type="button" className={ghost} disabled={submitting} onClick={() => go("configure")}>Edit details</button>
-              <button type="button" className={ghost} disabled={submitting} onClick={() => go("contact")}>Edit email</button>
+              <button type="button" className={ghost} onClick={() => go("configure")}>Edit details</button>
+              <button type="button" className={ghost} onClick={() => go("contact")}>Edit email</button>
               <button type="button" className={primary} disabled={submitting} onClick={submit}>
                 {submitting && <Loader2 size={16} className="animate-spin" />} Submit (simulated)
               </button>
@@ -262,7 +248,7 @@ export default function ServiceConfigurator() {
             <p className="mt-4 max-w-xl text-ink/70">
               Demo reference <span className="font-mono">{reference}</span>. This request was <strong>not</strong> sent to anyone; real delivery arrives with the backend.
             </p>
-            <button type="button" className={`${ghost} mt-8`} onClick={() => { verificationAttempt.current++; setAnswers({}); setCustom(""); setEmail(""); setCode(""); setVerify("idle"); setSubmitError(null); setReference(""); setServiceId(null); go("select"); }}>
+            <button type="button" className={`${ghost} mt-8`} onClick={() => { setAnswers({}); setCustom(""); setEmail(""); setVerify("idle"); setServiceId(null); go("select"); }}>
               Start another request
             </button>
           </div>

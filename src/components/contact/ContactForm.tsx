@@ -15,7 +15,6 @@ export default function ContactForm() {
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (status === "sending") return;
     const next: Errs = {
       name: requiredError(v.name, "Name") ?? undefined,
       email: emailError(v.email) ?? undefined,
@@ -24,10 +23,7 @@ export default function ContactForm() {
     setErrs(next);
     if (next.name || next.email || next.message) return;
     setStatus("sending");
-    try {
-      await contactAdapter.sendMessage({ name: v.name.trim(), email: v.email.trim(), message: v.message.trim() });
-      setStatus("sent");
-    } catch { setStatus("error"); }
+    try { await contactAdapter.sendMessage(v); setStatus("sent"); } catch { setStatus("error"); }
   };
 
   if (status === "sent")

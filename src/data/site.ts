@@ -1,15 +1,21 @@
+
 import type { NavItem } from "@/types";
 
-// PLACEHOLDERS: replace every "[...]" value. Components render these as-is.
 export const site = {
-  name: "[Your Name]",
-  role: "[Your role, e.g. Software Developer]",
-  headline: "Software built with precision and care.",
-  intro: "[Placeholder] One or two sentences about what you build and who you build it for.",
-  location: "[City, Country]",
-  availability: "[Availability status]",
-  email: null as string | null,
-  socials: [] as { label: string; href: string }[],
+  name: "Aaroh Dharmadhikari",
+  role: "Software Developer · AI & Web Development",
+  headline: "Building thoughtful digital experiences.",
+  intro:
+    "I build web applications and explore practical applications of artificial intelligence, with a focus on useful features, clean interfaces, and maintainable software.",
+  location: "Pune, India",
+  availability: "Contact me to discuss a project",
+  email: "say2aaroh@gmail.com",
+  socials: [
+    {
+      label: "GitHub",
+      href: "https://github.com/aarohDharmadhikari",
+    },
+  ],
 };
 
 export const nav: NavItem[] = [
